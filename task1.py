@@ -1,7 +1,16 @@
 import unittest
-def division(n, m, a, b):
+def division(a, b):
     ans = ''
     c = 0
+    na, nb = a, b
+    n, m = 0, 0
+    while na > 0 or nb > 0:
+        if na > 0:
+            na //= 10
+            n += 1
+        if nb > 0:
+            nb //= 10
+            m += 1
     if n < m or n == 0:
         ans = '0' #Лучший случай и тут за O(1) просто одна проверка
     else:
@@ -25,8 +34,8 @@ def division(n, m, a, b):
     return int(ans) #Ну и худший случай соответственно за O(n*m*9) ~ O(n*m)
 class TestDivision(unittest.TestCase):
     def test_division(self):
-        self.assertEqual(division(4, 2, 5000, 37), 135)
-        self.assertEqual(division(5, 5, 25625, 24), 1067)
-        self.assertEqual(division(3, 4, 345, 2222), 0)
+        self.assertEqual(division(5000, 37), 135)
+        self.assertEqual(division( 25625, 24), 1067)
+        self.assertEqual(division( 345, 2222), 0)
 if __name__ == "__main__":
     unittest.main()
