@@ -1,4 +1,5 @@
 numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
 class Stack:
     def __init__(self):
         self._items = []
@@ -26,28 +27,20 @@ class Stack:
         return str(self._items)
 
 def precedence(op):
-    if op in ('(', ')'):
-        return 10
-    elif op in ('!', '~'):
-        return 9
-    elif op == '**':
-        return 8
-    elif op in ('*', '/', '%'):
-        return 7
-    elif op in ('+', '-'):
-        return 6
-    elif op in ('<<', '>>'):
-        return 5
-    elif op == '&':
-        return 4
-    elif op in '^':
-        return 3
-    elif op == '|':
-        return 2
-    elif op == '&&':
-        return 1
-    elif op == '||':
-        return 0
+    precedence_map = {
+        '(': 10, ')': 10,
+        '!': 9, '~': 9,
+        '**': 8,
+        '*': 7, '/': 7, '%': 7,
+        '+': 6, '-': 6,
+        '<<': 5, '>>': 5,
+        '&': 4,
+        '^': 3,
+        '|': 2,
+        '&&': 1,
+        '||': 0
+    }
+    return precedence_map[op]
 
 def infix_to_polish(raw):
     output = ""
@@ -71,6 +64,25 @@ def infix_to_polish(raw):
             stack.push(s)
     while not(stack.is_empty()):
         output += stack.pop() + " "
-    return output
-print(infix_to_polish("( 3 ** 4 ) ** 2"))
+    return output.strip()
 
+test_cases = [
+    ("3 + 4", "3 4 +"),
+    ("3 * 4 + 2", "3 4 * 2 +"),
+    ("3 + 4 * 2", "3 4 2 * +"),
+    ("( 3 + 4 ) * 2", "3 4 + 2 *"),
+    ("3 + 4 * 2 / ( 1 - 5 )", "3 4 2 * 1 5 - / +"),
+    ("3 ** 4", "3 4 **"),
+    ("( 3 ** 4 ) ** 2", "3 4 ** 2 **"),
+    ("3 + 4 * 2 / ( 1 - 5 ) ** 2", "3 4 2 * 1 5 - 2 ** / +"),
+    ("~ 3 + 4", "3 ~ 4 +"),
+    ("3 + 4 * 2 << 1", "3 4 2 * + 1 <<"),
+    ("3 && 4 || 2", "3 4 && 2 ||"),
+    ("3 * 4 + 2 & 5", "3 4 * 2 + 5 &"),
+    ("3 + 4 % 2 ^ 1", "3 4 2 % + 1 ^"),
+]
+
+for infix, expected in test_cases:
+    result = infix_to_polish(infix)
+    print(f"Вход: {infix: <30} Ожидается: {expected: <30} Получено: {result}",
+          "OK" if result == expected else "NOT OK")
